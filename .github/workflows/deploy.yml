@@ -1,0 +1,61 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: prod
+  GKE_ZONE: us-central1-a
+  IMAGE: latest
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repo fagkveld-feb-2020
+        uses: actions/checkout@master
+
+      - name: Setup Java 13/Maven
+        uses: actions/setup-java@v1
+        with:
+          java-version: 13
+
+      - name: Setup gcloud CLI
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '270.0.0'
+          service_account_email: ${{ secrets.SA_EMAIL }}
+          service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
+      - name: Configure docker to use gcloud CLI as a credential helper
+        run: |
+          gcloud auth configure-docker
+
+      - name: Build docker image
+        run: |
+          docker build -t gcr.io/$GKE_PROJECT/$IMAGE:$GITHUB_SHA \
+            --build-arg GITHUB_SHA="$GITHUB_SHA" \
+            --build-arg GITHUB_REF="$GITHUB_REF" .
+
+      - name: Publish docker image to google container registry
+        run: |
+          docker push gcr.io/$GKE_PROJECT/$IMAGE:$GITHUB_SHA
+
+      - name: Set up Kustomize
+        run: |
+          curl -o kustomize --location https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+          chmod u+x ./kustomize
+
+      - name: Deploy docker image to kubernetes cluster
+        run: |
+          gcloud container clusters get-credentials $GKE_CLUSTER \
+            --zone $GKE_ZONE --project $GKE_PROJECT
+          ./kustomize edit set image gcr.io/GKE_PROJECT/IMAGE:TAG=gcr.io/$GKE_PROJECT/$IMAGE:$GITHUB_SHA
+          ./kustomize build . | kubectl apply -f -
+          kubectl rollout status deployment/gke-test
+          kubectl get services -o wide
