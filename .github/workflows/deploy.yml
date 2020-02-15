@@ -53,12 +53,15 @@ jobs:
 
       - name: Build docker image
         run: |
-          docker build -t gcr.io/$GKE_PROJECT/$IMAGE:$GITHUB_SHA \
+          docker build -f .docker/Dockerfile -t gcr.io/$GKE_PROJECT/$IMAGE:$GITHUB_SHA \
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" .
 
   deploy:
-    - name: Deploy App
+    name: Deploy App
+    runs-on: ubuntu-latest
+    steps:
+
       - name: Deploy docker image to google container registry
         run: |
           docker push gcr.io/$GKE_PROJECT/$IMAGE:$GITHUB_SHA
@@ -73,6 +76,6 @@ jobs:
           gcloud container clusters get-credentials $GKE_CLUSTER \
             --zone $GKE_ZONE --project $GKE_PROJECT
           ./kustomize edit set image gcr.io/GKE_PROJECT/IMAGE:TAG=gcr.io/$GKE_PROJECT/$IMAGE:$GITHUB_SHA
-          ./kustomize build . | kubectl apply -f -
+          ./kustomize build .kubernetes | kubectl apply -f -
           kubectl rollout status deployment/fagkveld-feb-2020
           kubectl get services -o wide

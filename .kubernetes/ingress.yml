@@ -1,0 +1,8 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: fagkveld-feb-2020-ingress
+spec:
+  backend:
+    serviceName: fagkveld-feb-2020
+    servicePort: 8080
