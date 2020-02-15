@@ -19,7 +19,6 @@ jobs:
     steps:
       - name: Checkout repo fagkveld-feb-2020
         uses: actions/checkout@master
-
       - name: Setup Java 13/Maven
         uses: actions/setup-java@v1
         with:
@@ -29,6 +28,8 @@ jobs:
     name: Test app
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repo fagkveld-feb-2020
+        uses: actions/checkout@master
       - name: Test with maven
         run: mvn test
 
