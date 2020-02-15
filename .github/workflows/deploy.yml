@@ -12,9 +12,8 @@ env:
   IMAGE: latest
 
 jobs:
-
   prepare:
-    name: Prepare code and tools
+    name: Test, Build, Containerize, Deploy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo fagkveld-feb-2020
@@ -23,24 +22,12 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 13
-
-  test:
-    name: Test app
-    runs-on: ubuntu-latest
-    steps:
       - name: Checkout repo fagkveld-feb-2020
         uses: actions/checkout@master
       - name: Test with maven
         run: mvn test
-
-  build:
-    name: Build and containerize
-    runs-on: ubuntu-latest
-    steps:
-
       - name: Build with maven
         run: mvn -T 1C package -DskipTests
-
       - name: Setup gcloud CLI
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
@@ -57,11 +44,6 @@ jobs:
           docker build -f .docker/Dockerfile -t gcr.io/$GKE_PROJECT/$IMAGE:$GITHUB_SHA \
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" .
-
-  deploy:
-    name: Deploy App
-    runs-on: ubuntu-latest
-    steps:
 
       - name: Deploy docker image to google container registry
         run: |
