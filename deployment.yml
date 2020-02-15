@@ -29,17 +29,11 @@ spec:
             httpGet:
               path: /live
               port: 8080
-              httpHeaders:
-                - name: Custom-Header
-                  value: Awesome
             initialDelaySeconds: 3
             periodSeconds: 3
           readinessProbe:
             httpGet:
               path: /live
               port: 8080
-              httpHeaders:
-                - name: Custom-Header
-                  value: Awesome
             initialDelaySeconds: 3
             periodSeconds: 3

@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 13
-      - name: Test with maven
+      - name: Download maven dependencies and test
         run: mvn test
       - name: Build with maven
         run: mvn -T 1C package -DskipTests
