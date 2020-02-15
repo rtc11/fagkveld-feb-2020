@@ -24,3 +24,12 @@ spec:
               cpu: 100m
             limits:
               cpu: 100m
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: 8080
+              httpHeaders:
+                - name: Custom-Header
+                  value: Awesome
+            initialDelaySeconds: 3
+            periodSeconds: 3
