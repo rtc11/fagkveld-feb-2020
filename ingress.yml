@@ -2,11 +2,9 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: fagkveld-feb-2020-ingress
+  labels:
+    app: fag
 spec:
-  rules:
-    - http:
-        paths:
-          - path: /*
-            backend:
-              serviceName: fagkveld-feb-2020
-              servicePort: 8080
+  backend:
+    serviceName: fagkveld-feb-2020
+    servicePort: 8080

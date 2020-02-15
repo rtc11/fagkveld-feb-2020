@@ -2,6 +2,8 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: fagkveld-feb-2020
+  labels:
+    app: fag
 spec:
   replicas: 1
   strategy:
@@ -12,7 +14,7 @@ spec:
   template:
     metadata:
       labels:
-        app: fagkveld-feb-2020
+        app: fag
     spec:
       containers:
         - name: fagkveld-feb-2020
