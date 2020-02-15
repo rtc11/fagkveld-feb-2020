@@ -25,6 +25,9 @@ jobs:
         with:
           java-version: 13
 
+      - name: Build with maven
+        run: mvn -T 1C package
+
       - name: Setup gcloud CLI
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
