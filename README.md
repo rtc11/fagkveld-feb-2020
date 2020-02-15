@@ -1,3 +1,5 @@
+![Build and Deploy](https://github.com/rtc11/fagkveld-feb-2020/workflows/Build%20and%20Deploy/badge.svg)
+
 # feb2020 project
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
