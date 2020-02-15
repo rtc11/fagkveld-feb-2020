@@ -10,7 +10,7 @@ public class LivenessProbe {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
+    public String live() {
         return "live";
     }
 }

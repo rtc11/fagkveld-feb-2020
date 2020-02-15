@@ -3,7 +3,7 @@ ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jb
 
 WORKDIR /deployments
 
-# COPY target/lib/* /deployments/lib/
+COPY target/lib/* /deployments/lib/
 
 COPY target/*-runner.jar /deployments/app.jar
 
